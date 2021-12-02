@@ -1,0 +1,84 @@
+<% layout('layouts/boilerplate')%>
+
+    <div class="row">
+        <h1 class="text-center">
+            New campground
+        </h1>
+        <div class="col-6 offset-3">
+            <form action="/campgrounds" method="POST" novalidate class="validate-form">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title </label>
+                    <input class="form-control" type="text" id="title" name="campground[title]" required>
+                    <div class="valid-feedback">
+                        Looks good! </div>
+                    <div class="invalid-feedback">
+                        Please enter campground name</div>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" id="location" name="campground[location]" required>
+                    <div class="valid-feedback">
+                        Looks good! </div>
+                    <div class="invalid-feedback">
+                        Please enter Location</div>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Image URL</label>
+                    <input class="form-control" type="text" id="image" name="campground[image]" required>
+                    <div class="valid-feedback">
+                        Looks good! </div>
+                    <div class="invalid-feedback">
+                        Please enter at least one image</div>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="price">Campground Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price-label">$</span>
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                            aria-describedby="price-label" name="campground[price]" required>
+                        <div class="valid-feedback">
+                            Looks good! </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Description</label>
+                    <textarea class="form-control" type="text" id="description" name="campground[description]"
+                        required> </textarea>
+                    <div class="valid-feedback">
+                        Looks good! </div>
+                    <div class="invalid-feedback">
+                        Please enter description</div>
+
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-success"> Add Campground </button>
+                </div>
+            </form>
+            <div class="mb-3">
+                <footer>
+                    <a class="btn btn-outline-secondary" href="/campgrounds" role="button">Back to All
+                        Campgrounds</a>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.validate-form')
+            Array.from(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
