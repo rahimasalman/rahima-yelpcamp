@@ -31,17 +31,46 @@
                 <div class="card-footer text-muted">2 days ago</div>
             </div>
 <h3 class="mb-2">Please Leave a Review </h3>
-<form action="" class="mb-3">
-    <div class="mb-3">
-        <label class="form-label" for="rating">Rating</label>
-        <input class="form-range" type="range" min="1"  max="5" name="review[rating]" id="rating">
-    <div class="mb-3">
-        <label class="form-label" for="body">Review</label>
-        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
-    </div>
-    </div>
-    <button class="btn btn-success">Submit</button>
-</form>
-
+            <form action="/campgrounds/<%=campground._id%>/reviews" method="POST"  class="validate-form mb-3"  novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="rating">Rating</label>
+                    <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter review</div>
+                </div>
+                <button class="btn btn-success">Submit</button>
+            </form>
+            <% for (let review of campground.reviews) {%>
+<div class="mb-3">
+    <hr>
+<p>Rating: <%= review.rating%></p>
+<p>Review: <%= review.body%></p>
+</div>
+            <% } %>
         </div>
     </div>
+
+
+<script>
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.validate-form')
+        Array.from(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
