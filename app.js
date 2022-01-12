@@ -1,19 +1,20 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const catchAsync = require('./utils/catchAsync');
+// const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError');
 const engine = require('ejs-mate');
-const { campgroundSchema, reviewSchema } = require('./schemas.js');
 const methodOverride = require('method-override');
-const Campground = require('./models/campground');
-const Review = require('./models/review');
+
+const campgrounds = require('./routes/campgrounds');
+const reviews = require('./routes/reviews');
 
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useCreateIndex: true,
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 const db = mongoose.connection;
@@ -29,27 +30,13 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')))
+
+app.use('/campgrounds', campgrounds);
+app.use('/campgrounds/:id/reviews', reviews)
 
 
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-};
 
-const validateReview = (req, res, next) => {
-    const {error} = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(e => e.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-}
 
 app.get('/', (req, res) => {
     res.render('home');
