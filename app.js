@@ -3,8 +3,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
-const engine = require('ejs-mate');
 const methodOverride = require('method-override');
 
 const campgrounds = require('./routes/campgrounds');
@@ -25,7 +25,7 @@ db.once("open", () => {
 });
 
 const app = express();
-app.engine('ejs', engine);
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -45,16 +45,21 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 
+app.use(flash());
+
+app.use((req, res, next) => { 
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
+
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews)
-
-
 
 
 app.get('/', (req, res) => {
     res.render('home');
 });
-
 
 
 app.all('*', (req, res, next) => {
