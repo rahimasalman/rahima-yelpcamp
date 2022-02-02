@@ -33,4 +33,11 @@ req.flash('success', "Welcome back! We've missed you!");
 res.redirect('/campgrounds');
 });
 
+//Logout Routes
+router.get('/logout', (req, res)=> {
+    req.logout();
+    req.flash('success', "We're sorry to see you go :( ");
+    res.redirect('/campgrounds');
+});
+
 module.exports = router;
