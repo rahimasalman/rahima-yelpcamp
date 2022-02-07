@@ -7,14 +7,14 @@ const passport = require('passport');
 
 
 // Register routes
-router.get('/register', users.renderRegister);
-
-router.post('/register', catchAsync(users.registerForm));
+router.route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.registerForm));
 
 //Login Routes
-router.get('/login', users.renderLogin);
-
-router.post('/login', passport.authenticate('local',
+router.route('/login')
+    .get(users.renderLogin)
+    .post(passport.authenticate('local',
     {failureFlash: true, failureRedirect: '/login'}), users.loginForm );
 
 //Logout Routes
