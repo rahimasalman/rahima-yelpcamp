@@ -1,8 +1,8 @@
 if(process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
-console.log(process.env.SECRET)
-console.log(process.env.KEY)
+// console.log(process.env.SECRET)
+// console.log(process.env.KEY)
 
 //require function is the easiest way to include modules that exist in separate files
 const express = require('express');
