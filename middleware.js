@@ -7,7 +7,6 @@ const { campgroundSchema, reviewSchema } = require('./schemas.js');
 //for checking if user logged in or don't
 module.exports.isLoggedIn = (req, res, next) => {
     if(!req.isAuthenticated()) {
-        req.session.returnTo = req.originalUrl;
         req.flash('error',"You must be logged in first!");
         return res.redirect('/login');
     };

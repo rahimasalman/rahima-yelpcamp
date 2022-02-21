@@ -1,6 +1,9 @@
 const User = require('../models/user');
 
-module.exports.renderRegister = (req, res)=> {
+module.exports.renderRegister = (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect('/campgrounds');
+    };
     res.render('users/register')
 };
 
@@ -20,13 +23,15 @@ module.exports.registerForm = async (req,res, next) => {
     };
 };
 
-module.exports.renderLogin = (req, res)=> {
+module.exports.renderLogin = (req, res) => {
+     if (req.isAuthenticated()) {
+        return res.redirect('/campgrounds');
+    };
     res.render('users/login');
 };
 module.exports.loginForm = async (req,res) => {
     req.flash('success', "Welcome back! We've missed you!");
     const redirectUrl = req.session.returnTo || '/campgrounds';
-    delete req.session.returnTo;
     res.redirect(redirectUrl);
 };
 
