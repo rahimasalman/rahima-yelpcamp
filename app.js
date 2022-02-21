@@ -74,6 +74,10 @@ passport.serializeUser(User.serializeUser());
 
 app.use((req, res, next) => {
     // console.log(req.session)
+      if (!['/login', '/register','/javascripts/d4validateForms.js', '/'].includes(req.originalUrl)) {
+        // console.log(req.originalUrl);
+        req.session.returnTo = req.originalUrl;
+    };
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
