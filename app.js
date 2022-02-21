@@ -74,7 +74,7 @@ passport.serializeUser(User.serializeUser());
 
 app.use((req, res, next) => {
     // console.log(req.session)
-      if (!['/login', '/register','/javascripts/d4validateForms.js', '/'].includes(req.originalUrl)) {
+      if (!['/login', '/register','/javascripts/d4validateForms.js','/public/javascripts/showPageMap.js', '/'].includes(req.originalUrl)) {
         // console.log(req.originalUrl);
         req.session.returnTo = req.originalUrl;
     };
