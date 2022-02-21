@@ -1,5 +1,4 @@
-<script>
-    (function () {
+ (function () {
         'use strict'
 
     bsCustomFileInput.init();
@@ -17,4 +16,3 @@
                 }, false)
             })
     })()
-</script>
