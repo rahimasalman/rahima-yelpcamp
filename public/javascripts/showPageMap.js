@@ -3,7 +3,7 @@ mapboxgl.accessToken = mapToken;
         container: 'map', // container ID
         style: 'mapbox://styles/mapbox/streets-v11', // style URL
         center:  campground.geometry.coordinates, // starting position [lng, lat]
-        zoom: 8 // starting zoom
+        zoom: 10 // starting zoom
     });
 
  new mapboxgl.Marker({ color: '#858bee', })
