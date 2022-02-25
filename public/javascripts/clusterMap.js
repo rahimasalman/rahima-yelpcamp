@@ -28,25 +28,25 @@ paint: {
 // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
 // with three steps to implement three types of circles:
 //   * green like, 20px circles when point count is less than 5
-//   * purple like, 30px circles when point count is between 5 and 50
-//   * blue like, 40px circles when point count is greater than or equal to 50
+//   * purple like, 30px circles when point count is between 5 and 20
+//   * blue like, 40px circles when point count is greater than or equal to 20
 'circle-color': [
 'step',
 ['get', 'point_count'],
 '#50CEC4',
 5,
 '#7576f1',
-50,
-'#4fa6e7'
+20,
+'#e3cfcf'
 ],
 'circle-radius': [
 'step',
 ['get', 'point_count'],
+15,
+5,
 20,
-100,
-30,
-750,
-40
+20,
+25
 ]
 }
 });
@@ -100,12 +100,9 @@ zoom: zoom
 // the location of the feature, with
 // description HTML from its properties.
    map.on('click', 'unclustered-point', (e) => {
-
+const popupText = e.features[0].properties.popUpMarkup;
 const coordinates = e.features[0].geometry.coordinates.slice();
-const mag = e.features[0].properties.mag;
-const tsunami =
-e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
- 
+     
 // Ensure that if the map is zoomed out such that
 // multiple copies of the feature are visible, the
 // popup appears over the copy being pointed to.
@@ -115,8 +112,8 @@ coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
  
 new mapboxgl.Popup()
 .setLngLat(coordinates)
-.setHTML(
-`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`
+   .setHTML(
+   popupText
 )
 .addTo(map);
 });
