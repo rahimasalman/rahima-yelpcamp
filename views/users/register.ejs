@@ -1,48 +1,47 @@
 <% layout('layouts/boilerplate')%>
 
-<h1> Register </h1>
-<form action="/register"  method="POST" class="validate-form" novalidate>
-            <div class="mb-3">
-                <label class="form-label" for="username">Username </label>
-                <input class="form-control" type="text" id="username" name="username" required>
-                <div class="valid-feedback">
-                    Looks good! </div>
-                <div class="invalid-feedback">
-                    Please enter  username</div>
+
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+            <div class="card shadow">
+                <img src="https://res.cloudinary.com/rahima/image/upload/v1646131779/YelpCamp/--grs8iMGqQE-_bkmsnm.jpg"
+                    alt="" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Register</h5>
+                <form action="/register" method="POST" class="validate-form" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="username">Username </label>
+                        <input class="form-control" type="text" id="username" name="username" autofocus required>
+                        <div class="valid-feedback">
+                            Looks good! </div>
+                        <div class="invalid-feedback">
+                            Please enter username</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email </label>
+                        <input class="form-control" type="email" id="email" name="email" required>
+                        <div class="valid-feedback">
+                            Looks good! </div>
+                        <div class="invalid-feedback">
+                            Please enter email</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" type="password" id="password" name="password" required>
+                        <div class="valid-feedback">
+                            Looks good! </div>
+                        <div class="invalid-feedback">
+                            Please enter password</div>
+                    </div>
+                    <div class="mb-3 d-grid gap-2">
+                        <button class="btn btn-success">Register</button>
+                    </div>
+                </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="email">Email </label>
-                <input class="form-control" type="email" id="email" name="email" required>
-                <div class="valid-feedback">
-                    Looks good! </div>
-                <div class="invalid-feedback">
-                    Please enter email</div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="password">Password</label>
-                <input class="form-control" type="password" id="password" name="password" required>
-                <div class="valid-feedback">
-                    Looks good! </div>
-                <div class="invalid-feedback">
-                    Please enter password</div>
-            </div>
-    <div class="mb-3">
-    <button class="btn btn-success">Register</button>
+        </div>
     </div>
-</form>
-<script>
-    (function () {
-        'use strict'
-        const forms = document.querySelectorAll('.validate-form')
-        Array.from(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
+</div>
+
