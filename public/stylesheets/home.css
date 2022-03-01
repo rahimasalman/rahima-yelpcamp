@@ -12,16 +12,16 @@ body {
 }
 
 .nav-link {
-  padding: 0.25 rem 0;
+  padding: 0.25rem 0;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
-  margin-left: 1.5 rem;
-  border-bottom: 0.25rem solid transparent;
+  margin-left: 1.5rem;
+  border-bottom: 0.1rem solid transparent;
 }
 
 .nav-link:hover {
   color: rgba(255, 255, 255, 0.5);
-  border-bottom-color: rgba(255, 255, 255, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-link.active {
@@ -33,4 +33,11 @@ body {
 .btn-secondary:hover {
   color: #333;
   text-shadow: none;
+}
+
+.head {
+  font-weight: 700;
+}
+.lead {
+  font-weight: 600;
 }
