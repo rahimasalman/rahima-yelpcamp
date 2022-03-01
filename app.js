@@ -74,7 +74,14 @@ passport.serializeUser(User.serializeUser());
 
 app.use((req, res, next) => {
     // console.log(req.session)
-      if (!['/login', '/register','/javascripts/validateForms.js','/public/javascripts/showPageMap.js','/public/javascripts/clusterMap.js', '/'].includes(req.originalUrl)) {
+    if (!['/login', '/register', '/javascripts/validateForms.js',
+        '/public/javascripts/showPageMap.js',
+        '/public/javascripts/clusterMap.js',
+        '/public/stylesheets/app.css',
+        '/public/stylesheets/show.css',
+        '/public/stylesheets/home.css',
+        '/public/stylesheets/stars.css',
+        '/'].includes(req.originalUrl)) {
         // console.log(req.originalUrl);
         req.session.returnTo = req.originalUrl;
     };
