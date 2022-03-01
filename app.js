@@ -16,6 +16,7 @@ const methodOverride = require('method-override');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
 
 //Routes
 const userRoutes = require('./routes/users');
@@ -47,6 +48,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+// To remove data using these defaults:
+app.use(mongoSanitize({
+     replaceWith: '_',
+}));
+
 const sessionConfig = {
     secret: 'fake secret',
     resave: false,
@@ -73,7 +79,7 @@ passport.deserializeUser(User.deserializeUser());
 passport.serializeUser(User.serializeUser());
 
 app.use((req, res, next) => {
-    // console.log(req.session)
+    console.log(req.query);
     if (!['/login', '/register', '/javascripts/validateForms.js',
         '/public/javascripts/showPageMap.js',
         '/public/javascripts/clusterMap.js',
@@ -82,7 +88,6 @@ app.use((req, res, next) => {
         '/public/stylesheets/home.css',
         '/public/stylesheets/stars.css',
         '/'].includes(req.originalUrl)) {
-        // console.log(req.originalUrl);
         req.session.returnTo = req.originalUrl;
     };
     res.locals.currentUser = req.user;
