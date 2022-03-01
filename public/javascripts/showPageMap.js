@@ -6,6 +6,9 @@ mapboxgl.accessToken = mapToken;
         zoom: 10 // starting zoom
     });
 
+    // Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
+
  new mapboxgl.Marker({ color: '#858bee', })
      .setLngLat(campground.geometry.coordinates)
      .setPopup(
