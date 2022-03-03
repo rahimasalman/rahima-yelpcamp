@@ -5,22 +5,10 @@
                 <h4 class="alert-heading ">
                     <%=err.message%>
                 </h4>
-                <p>Something went wrong! A problem has been occurred while submitting your data.</p>
-                <hr>
-                <p class="mb-0"><strong> Warning! </strong>!</strong> Your connection is not secure. Please read the
-                    comments
-                    carefully.
-                </p>
-                <p>How do you make your connection secure?
-                <ol>
-                    <li>Rename Routers and Networks.</li>
-                    <li>Use strong passwords.</li>
-                    <li>Turn on encryption.</li>
-                    <li>Use multiple firewalls.</li>
-                    <li>Turn off the WPS setting.</li>
-                </ol>
-                </p>
-
+                <% if(process.env.NODE_ENV !== "production") {%>
+                    <p><%= err.stack%>
+                    </p>
+                <% } %>
             </div>
         </div>
     </div>
