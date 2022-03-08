@@ -5,7 +5,6 @@ const users = require('../controllers/users');
 const User = require('../models/user');
 const passport = require('passport');
 
-
 // Register routes
 router.route('/register')
     .get(users.renderRegister)
