@@ -18,15 +18,19 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo')(session);
 
 //Routes
 const userRoutes = require('./routes/users');
 const campgroundsRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
 
+const dbUrl = 'mongodb://localhost:27017/yelp-camp';
 
 //Our Database connection-----------------------------------------------------
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+// 'mongodb://localhost:27017/yelp-camp'
+// process.env.DB_URL
+mongoose.connect(dbUrl, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -107,10 +111,22 @@ app.use(
     })
 );
 
+const secret = process.env.SECRET;
+
+const store = new MongoStore({
+    url: dbUrl,
+    secret: "process.env.SECRET",
+    touchAfter: 24 * 3600,
+});
+
+store.on('error', function (error) {
+    console.log('Sessoin store error:', error);
+});
 
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'fake secret',
+    secret: 'process.env.SECRET',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -135,10 +151,17 @@ passport.deserializeUser(User.deserializeUser());
 // How to get a user out of that session
 passport.serializeUser(User.serializeUser());
 
+
 app.use((req, res, next) => {
-    if (!['/login', '/register', '/'].includes(req.originalUrl)) {
-        req.session.returnTo = req.originalUrl;
-    };
+    // if (!['/login', '/register', '/'].includes(req.originalUrl)) {
+    //     req.session.returnTo = req.originalUrl;
+    // };
+    if(!['/login', '/'].includes(req.originalUrl)) {
+    req.session.previousReturnTo = req.session.returnTo; // store the previous url
+    req.session.returnTo = req.originalUrl; // assign a new url
+    console.log('req.session.previousReturnTo', req.session.previousReturnTo)
+    console.log('req.session.returnTo', req.session.returnTo);
+}
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -164,10 +187,11 @@ app.get('/', (req, res) => {
 });
 
 
-app.all('*', (req, res, next) => {
+app.all('*', (req,res,next) => {
+    req.session.returnTo = req.session.previousReturnTo;
+    console.log('Previous returnTo reset to:', req.session.returnTo )
     next(new ExpressError('Page Not Found', 404));
-});
-
+})
 app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something went wrong!!!" } = err;
     if (!err.message) err.message = 'OHH NO, SOMETHING WENT WRONG!';

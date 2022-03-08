@@ -1,4 +1,14 @@
 const User = require('../models/user');
+const ObjectId = require('mongodb').ObjectId;
+
+module.exports.showCampground = async (req, res) => {
+    if (!ObjectId.isValid(req.params.id)) {
+        req.session.returnTo = req.session.previousReturnTo;
+        console.log('Invalid campground show id, returnTo reset to:', req.session.returnTo);
+    }
+}
+    // all other controller code should come below
+
 
 module.exports.renderRegister = (req, res) => {
     if (req.isAuthenticated()) {
