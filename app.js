@@ -1,138 +1,141 @@
-if(process.env.NODE_ENV !== "production") {
-    require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 // console.log(process.env.SECRET)
 // console.log(process.env.KEY)
 
 //require function is the easiest way to include modules that exist in separate files
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const ejsMate = require('ejs-mate');
-const session = require('express-session');
-const flash = require('connect-flash');
-const ExpressError = require('./utils/ExpressError');
-const methodOverride = require('method-override');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const User = require('./models/user');
-const mongoSanitize = require('express-mongo-sanitize');
-const helmet = require('helmet');
-const MongoStore = require('connect-mongo')(session);
+const express = require("express");
+const path = require("path");
+const mongoose = require("mongoose");
+const ejsMate = require("ejs-mate");
+const session = require("express-session");
+const flash = require("connect-flash");
+const ExpressError = require("./utils/ExpressError");
+const methodOverride = require("method-override");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const MongoStore = require("connect-mongo")(session);
 
 //Routes
-const userRoutes = require('./routes/users');
-const campgroundsRoutes = require('./routes/campgrounds');
-const reviewsRoutes = require('./routes/reviews');
+const userRoutes = require("./routes/users");
+const campgroundsRoutes = require("./routes/campgrounds");
+const reviewsRoutes = require("./routes/reviews");
 
-const dbUrl =  process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 
 //Our Database connection-----------------------------------------------------
 mongoose.connect(dbUrl, {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
-    console.log("Database connected");
+  console.log("Database connected");
 });
 
 // Configuration for app ------------------------------------------------------
 const app = express();
-app.engine('ejs', ejsMate);
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 //Middleware-------------------------------------------------------------------
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, "public")));
 // To remove data using these defaults:
-app.use(mongoSanitize({
-     replaceWith: '_',
-}));
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
 
 // Content security policy
 app.use(helmet());
 
 const scriptSrcUrls = [
-    "https://stackpath.bootstrapcdn.com/",
-    "https://api.tiles.mapbox.com/",
-    "https://api.mapbox.com/",
-    "https://kit.fontawesome.com/",
-    "https://cdnjs.cloudflare.com/",
-    "https://cdn.jsdelivr.net/",
-    "https://res.cloudinary.com/rahima/"
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://api.mapbox.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net/",
+  "https://res.cloudinary.com/rahima/",
 ];
 const styleSrcUrls = [
-    "https://kit-free.fontawesome.com/",
-    "https://stackpath.bootstrapcdn.com/",
-    "https://api.mapbox.com/",
-    "https://api.tiles.mapbox.com/",
-    "https://fonts.googleapis.com/",
-    "https://use.fontawesome.com/",
-    "https://cdn.jsdelivr.net/",
-    "https://res.cloudinary.com/rahima/"
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.mapbox.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net/",
+  "https://res.cloudinary.com/rahima/",
 ];
 const connectSrcUrls = [
-    "https://*.tiles.mapbox.com",
-    "https://api.mapbox.com",
-    "https://events.mapbox.com",
-    "https://res.cloudinary.com/rahima/"
+  "https://*.tiles.mapbox.com",
+  "https://api.mapbox.com",
+  "https://events.mapbox.com",
+  "https://res.cloudinary.com/rahima/",
 ];
-const fontSrcUrls = [ "https://res.cloudinary.com/rahima/" ];
- 
+const fontSrcUrls = ["https://res.cloudinary.com/rahima/"];
+
 app.use(
-    helmet.contentSecurityPolicy({
-        directives : {
-            defaultSrc : [],
-            connectSrc : [ "'self'", ...connectSrcUrls ],
-            scriptSrc  : [ "'unsafe-inline'", "'self'", ...scriptSrcUrls ],
-            styleSrc   : [ "'self'", "'unsafe-inline'", ...styleSrcUrls ],
-            workerSrc  : [ "'self'", "blob:" ],
-            objectSrc  : [],
-            imgSrc     : [
-                "'self'",
-                "blob:",
-                "data:",
-                "https://res.cloudinary.com/rahima/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
-                "https://images.unsplash.com/"
-            ],
-            fontSrc    : [ "'self'", ...fontSrcUrls ],
-            mediaSrc   : [ "https://res.cloudinary.com/rahima/" ],
-            childSrc   : [ "blob:" ]
-        }
-    })
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/rahima/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        "https://images.unsplash.com/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+      mediaSrc: ["https://res.cloudinary.com/rahima/"],
+      childSrc: ["blob:"],
+    },
+  })
 );
 
 const secret = process.env.SECRET || "37rdGFGFbrtirhn5e4rtEW";
 
 const store = new MongoStore({
-    url: dbUrl,
-    secret,
-    touchAfter: 24 * 3600,
+  url: dbUrl,
+  secret,
+  touchAfter: 24 * 3600,
 });
 
-store.on('error', function (error) {
-    console.log('Sessoin store error:', error);
+store.on("error", function (error) {
+  console.log("Sessoin store error:", error);
 });
 
 const sessionConfig = {
-    store,
-    name: 'session',
-    secret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        //secure: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-    }};
+  store,
+  name: "session",
+  secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    //secure: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
 
 //Use app.use(session()) before passport.session() to make sure login sessions ll be restored in the correct order
 app.use(session(sessionConfig));
@@ -149,29 +152,25 @@ passport.deserializeUser(User.deserializeUser());
 // How to get a user out of that session
 passport.serializeUser(User.serializeUser());
 
-
 app.use((req, res, next) => {
-    // if (!['/login', '/register', '/'].includes(req.originalUrl)) {
-    //     req.session.returnTo = req.originalUrl;
-    // };
-    if(!['/login', '/'].includes(req.originalUrl)) {
+  // if (!['/login', '/register', '/'].includes(req.originalUrl)) {
+  //     req.session.returnTo = req.originalUrl;
+  // };
+  if (!["/login", "/"].includes(req.originalUrl)) {
     req.session.previousReturnTo = req.session.returnTo; // store the previous url
     req.session.returnTo = req.originalUrl; // assign a new url
-    console.log('req.session.previousReturnTo', req.session.previousReturnTo)
-    console.log('req.session.returnTo', req.session.returnTo);
-}
-    res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
-    next();
+    console.log("req.session.previousReturnTo", req.session.previousReturnTo);
+    console.log("req.session.returnTo", req.session.returnTo);
+  }
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
 });
 
-
-
-app.use('/', userRoutes);
-app.use('/campgrounds', campgroundsRoutes);
-app.use('/campgrounds/:id/reviews', reviewsRoutes);
-
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundsRoutes);
+app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
 // app.get('/fakeUser', async (req, res) =>{
 //     const user = new User ({
@@ -180,24 +179,23 @@ app.use('/campgrounds/:id/reviews', reviewsRoutes);
 //     res.send(newUser);
 // });
 
-app.get('/', (req, res) => {
-    res.render('home');
+app.get("/", (req, res) => {
+  res.render("home");
 });
 
-
-app.all('*', (req,res,next) => {
-    req.session.returnTo = req.session.previousReturnTo;
-    console.log('Previous returnTo reset to:', req.session.returnTo )
-    next(new ExpressError('Page Not Found', 404));
-})
+app.all("*", (req, res, next) => {
+  req.session.returnTo = req.session.previousReturnTo;
+  console.log("Previous returnTo reset to:", req.session.returnTo);
+  next(new ExpressError("Page Not Found", 404));
+});
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = "Something went wrong!!!" } = err;
-    if (!err.message) err.message = 'OHH NO, SOMETHING WENT WRONG!';
-    res.status(statusCode).render('error', { err });
+  const { statusCode = 500, message = "Something went wrong!!!" } = err;
+  if (!err.message) err.message = "OHH NO, SOMETHING WENT WRONG!";
+  res.status(statusCode).render("error", { err });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-    console.log('Serving on port:', port);
+  console.log("Serving on port:", port);
 });
