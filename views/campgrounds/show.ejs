@@ -168,12 +168,14 @@
 
 <script>
   const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+  
   const campground = <%-JSON.stringify(campground)%>;
+  
   let n =  new Date();
   let y = n.getFullYear();
   let  m = n.getMonth() + 1;
   let  d = n.getDate();
   document.getElementById("date").innerHTML = m + "/" + d + "/" + y;
+  
 </script>
-
 <script src="/javascripts/showPageMap.js"></script>
