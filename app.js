@@ -41,7 +41,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(process.env.LAMBDA_TASK_ROOT || __dirname, "views"));
 
 //Middleware-------------------------------------------------------------------
 app.use(express.urlencoded({ extended: true }));
