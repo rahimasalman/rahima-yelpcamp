@@ -3,9 +3,15 @@
   publish = "public"
   functions = "netlify/functions"
 
+[build.environment]
+  # "rahima" (the cloud name) legitimately appears in Cloudinary URLs throughout
+  # the codebase — it is not a leaked secret.
+  SECRETS_SCAN_OMIT_KEYS = "CLOUDINARY_CLOUD_NAME"
+
 [functions]
-  node_bundler = "nft"
+  node_bundler = "esbuild"
   included_files = ["views/**"]
+  external_node_modules = ["mongoose", "mongodb"]
 
 [[redirects]]
   from = "/*"
