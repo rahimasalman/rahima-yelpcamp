@@ -45,8 +45,10 @@ module.exports.loginForm = async (req,res) => {
     res.redirect(redirectUrl);
 };
 
-module.exports.renderLogout = (req, res)=> {
-    req.logout();
-    req.flash('success', "We're sorry to see you go :( ");
-    res.redirect('/campgrounds');
+module.exports.renderLogout = (req, res, next)=> {
+    req.logout(function(err) {
+        if (err) return next(err);
+        req.flash('success', "We're sorry to see you go :( ");
+        res.redirect('/campgrounds');
+    });
 };
