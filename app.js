@@ -18,7 +18,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 
 //Routes
 const userRoutes = require("./routes/users");
@@ -28,12 +28,7 @@ const reviewsRoutes = require("./routes/reviews");
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 
 //Our Database connection-----------------------------------------------------
-mongoose.connect(dbUrl, {
-  useCreateIndex: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -43,6 +38,7 @@ db.once("open", () => {
 
 // Configuration for app ------------------------------------------------------
 const app = express();
+app.set("trust proxy", 1);
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -57,9 +53,6 @@ app.use(
     replaceWith: "_",
   })
 );
-
-// Content security policy
-app.use(helmet());
 
 const scriptSrcUrls = [
   "https://stackpath.bootstrapcdn.com/",
@@ -89,32 +82,34 @@ const connectSrcUrls = [
 const fontSrcUrls = ["https://res.cloudinary.com/rahima/"];
 
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: [],
-      connectSrc: ["'self'", ...connectSrcUrls],
-      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-      workerSrc: ["'self'", "blob:"],
-      objectSrc: [],
-      imgSrc: [
-        "'self'",
-        "blob:",
-        "data:",
-        "https://res.cloudinary.com/rahima/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
-        "https://images.unsplash.com/",
-      ],
-      fontSrc: ["'self'", ...fontSrcUrls],
-      mediaSrc: ["https://res.cloudinary.com/rahima/"],
-      childSrc: ["blob:"],
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'none'"],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+        styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", "blob:"],
+        objectSrc: ["'none'"],
+        imgSrc: [
+          "'self'",
+          "blob:",
+          "data:",
+          "https://res.cloudinary.com/rahima/",
+          "https://images.unsplash.com/",
+        ],
+        fontSrc: ["'self'", ...fontSrcUrls],
+        mediaSrc: ["https://res.cloudinary.com/rahima/"],
+        childSrc: ["blob:"],
+      },
     },
   })
 );
 
 const secret = process.env.SECRET || "37rdGFGFbrtirhn5e4rtEW";
 
-const store = new MongoStore({
-  url: dbUrl,
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
   secret,
   touchAfter: 24 * 3600,
 });
@@ -131,7 +126,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    //secure: true,
+    secure: process.env.NODE_ENV === "production",
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -194,8 +189,11 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-const port = process.env.PORT || 8000;
+if (require.main === module) {
+  const port = process.env.PORT || 8000;
+  app.listen(port, () => {
+    console.log("Serving on port:", port);
+  });
+}
 
-app.listen(port, () => {
-  console.log("Serving on port:", port);
-});
+module.exports = app;
