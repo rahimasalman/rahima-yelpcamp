@@ -7,9 +7,8 @@
   SECRETS_SCAN_OMIT_KEYS = "CLOUDINARY_CLOUD_NAME"   # ← tells scanner: "rahima" in URLs is fine
 
 [functions]
-  node_bundler = "esbuild"                            # ← back to esbuild (nft silently failed)
-  included_files = ["views/**"]                       # ← EJS templates bundled with the function
-  external_node_modules = ["mongoose", "mongodb"]    # ← skip native modules, deploy as-is
+  node_bundler = "esbuild"
+  included_files = ["views/**"]
 
 [[redirects]]
   from = "/*"
