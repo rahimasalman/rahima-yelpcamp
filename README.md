@@ -1,55 +1,143 @@
-<div class="markdown w-full ">
-    <h1>Yelpcamp by rahimasalman </h1>
-    <h4> Go to wesbite: <span> <a href="https://rahima-yelpcamp.cyclic.app/" target="_blank">https://rahima-yelpcamp.cyclic.app/ </a></span></h4> 
-    <p>Welcome to website called Yelpcamp from udemy instructor Colt Steele. 
-        Website was built using MongoDB, JavaScript, CSS, HTML, Express.js and Node.js.</p>
-    <h2>Features</h2>
-    <ul style="font-size: 16px">
-    <li>Dynamic content management using MongoDB as the database.</li>
-    <li>Customizable styles using CSS.</li><li>Dynamic page creation using HTML and JavaScript.</li>
-    <li>Easy routing using Express.js.</li><li>Server-side processing using Node.js.</li>
-    </ul>
-    <h2>Requirements</h2>
-    <ul style="font-size: 16px">
-    <li>MongoDB</li>
-    <li>Node.js</li>
-    <li>Express.js</li>
-    </ul>
-    <h2>Getting Started</h2>
-    <ol style="font-size: 16px">
-    <li>Clone the repository to your local machine.</li>
+# YelpCamp by rahimasalman
 
-```sh
-git clone https://github.com/rahimasalman/rahima-yelpcamp.git
-```
-<li>Clone the repository to your local machine.</li>
+ - Go to website: - [https://rahima-yelpcamp.netlify.app](https://rahima-yelpcamp.netlify.app/) 
+ - Welcome to website called Yelpcamp from Udemy instructor Colt Steele. Website was built using MongoDB, JavaScript, CSS, HTML, Express.js and Node.js.
+- A full-stack campground review platform where users can discover, add, and review campgrounds from around the world. Built with Node.js, Express, MongoDB, and deployed to Netlify via serverless functions.
 
-```sh
+---
+
+## Features
+
+- **Browse campgrounds** on an interactive cluster map (Mapbox)
+- **Create, edit & delete** campground listings with photo uploads
+- **Leave reviews** with ratings on any campground
+- **User authentication** — register, log in, log out (Passport.js)
+- **Authorization** — only the author of a campground or review can edit/delete it
+- **Image uploads** stored on Cloudinary
+- **Geocoding** — type a location and it pins the map automatically
+- **Security** — Helmet CSP headers, Mongo sanitization, input validation (Joi), HTML sanitization
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express 4 |
+| Database | MongoDB Atlas + Mongoose 8 |
+| Templating | EJS + EJS-Mate (layouts) |
+| Auth | Passport.js + passport-local-mongoose |
+| File uploads | Multer 2 + Cloudinary SDK v2 |
+| Maps | Mapbox GL JS + @mapbox/mapbox-sdk |
+| Session store | connect-mongo (MongoDB-backed sessions) |
+| Security | Helmet, express-mongo-sanitize, sanitize-html, Joi |
+| Deployment | Netlify Functions (serverless-http) |
+
+---
+
+## Getting Started Locally
+
+### 1. Prerequisites
+
+- [Node.js](https://nodejs.org/) v18+
+- A free [MongoDB Atlas](https://mongodb.com/atlas) cluster
+- A free [Cloudinary](https://cloudinary.com) account
+- A free [Mapbox](https://mapbox.com) account
+
+### 2. Clone & install
+
+```bash
+git clone https://github.com/your-username/rahima-yelpcamp.git
 cd rahima-yelpcamp
-```
-
-<li>Install the required packages</li>
-
-```sh
 npm install
 ```
-<li>Start the server</li>
 
-```sh
-npm start 
+### 3. Set up environment variables
+
+Copy the example file and fill in your keys:
+
+```bash
+cp .env.example .env
 ```
-<li>Open your browser and navigate to :</li>
 
-```sh
- http://localhost:8000
+Open `.env` and replace every placeholder:
+
 ```
-</ol>
+DB_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/yelp-camp
+SECRET=replace-with-a-long-random-secret
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_KEY=your-api-key
+CLOUDINARY_SECRET=your-api-secret
+MAPBOX_TOKEN=pk.your-mapbox-token-here
+```
 
-<h2>Contact</h2>
-<p style="font-size: 16px">
-If you have any questions or suggestions, you can reach me at :
-<span><a href="mailto:rehimesalman7@gmail.com" target="_new">rehimesalman7@gmail.com</a> </span>
-</p>
-</div>
+> See the [Environment Variables](#environment-variables) section below for where to get each one.
 
+### 4. Run locally
 
+```bash
+npm run dev
+```
+
+Visit `http://localhost:8000`
+
+---
+
+## Environment Variables
+
+| Variable | Where to get it |
+|---|---|
+| `DB_URL` | [MongoDB Atlas](https://mongodb.com/atlas) → your cluster → **Connect** → *Drivers* → copy the string, replace `<password>` |
+| `SECRET` | Any long random string — generate one: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `CLOUDINARY_CLOUD_NAME` | [Cloudinary Console](https://cloudinary.com/console) → Dashboard |
+| `CLOUDINARY_KEY` | Same Cloudinary Dashboard → **API Key** |
+| `CLOUDINARY_SECRET` | Same Cloudinary Dashboard → **API Secret** |
+| `MAPBOX_TOKEN` | [Mapbox Tokens](https://account.mapbox.com/access-tokens/) → copy your default public token or create a new one |
+
+---
+## Project Structure
+
+```
+├── app.js                  # Express app (entry point)
+├── controllers/            # Route handler logic
+│   ├── campgrounds.js
+│   ├── reviews.js
+│   └── users.js
+├── models/                 # Mongoose schemas
+│   ├── campground.js
+│   ├── review.js
+│   └── user.js
+├── routes/                 # Express routers
+│   ├── campgrounds.js
+│   ├── reviews.js
+│   └── users.js
+├── views/                  # EJS templates
+│   ├── campgrounds/
+│   ├── users/
+│   ├── partials/
+│   └── layouts/
+├── public/                 # Static assets (CSS, client JS)
+├── cloudinary/             # Cloudinary + Multer storage config
+├── middleware.js           # Auth & validation middleware
+├── schemas.js              # Joi validation schemas
+├── seeds/                  # Database seed scripts
+├── utils/                  # Helpers (catchAsync, ExpressError)
+├── .env.example            # Environment variable template
+└── package.json
+```
+
+---
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Run locally with nodemon (auto-restart on file save) |
+| `npm start` | Run with plain Node (used by Netlify / production) |
+
+---
+
+## License
+
+ISC
