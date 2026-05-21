@@ -53,28 +53,7 @@ cd rahima-yelpcamp
 npm install
 ```
 
-### 3. Set up environment variables
-
-Copy the example file and fill in your keys:
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and replace every placeholder:
-
-```
-DB_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/yelp-camp
-SECRET=replace-with-a-long-random-secret
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_KEY=your-api-key
-CLOUDINARY_SECRET=your-api-secret
-MAPBOX_TOKEN=pk.your-mapbox-token-here
-```
-
-> See the [Environment Variables](#environment-variables) section below for where to get each one.
-
-### 4. Run locally
+### 3. Run locally
 
 ```bash
 npm run dev
