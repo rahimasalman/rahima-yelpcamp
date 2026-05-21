@@ -2,8 +2,17 @@ const Campground = require('../models/campground');
 const {isLoggedIn, isAuthor, validateCampground } = require('../middleware');
 const { cloudinary } = require("../cloudinary");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-const mapBoxToken = process.env.MAPBOX_TOKEN;
-const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
+// Lazy-init: don't create the geocoder at module load time.
+// In serverless environments the module loads before env vars are guaranteed,
+// so we create the client on first use instead.
+let _geocoder;
+const getGeocoder = () => {
+    if (!_geocoder) {
+        _geocoder = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
+    }
+    return _geocoder;
+};
 
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -15,7 +24,7 @@ module.exports.renderNewForm = (req, res) => {
 };
 module.exports.createCampground =async (req, res, next) => {
     // if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
-   const geoData =  await geocoder.forwardGeocode({
+   const geoData =  await getGeocoder().forwardGeocode({
        query: req.body.campground.location,
        limit: 1
    }).send();
