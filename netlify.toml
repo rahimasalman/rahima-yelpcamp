@@ -4,7 +4,8 @@
   functions = "netlify/functions"
 
 [functions]
-  node_bundler = "esbuild"
+  node_bundler = "nft"
+  included_files = ["views/**"]
 
 [[redirects]]
   from = "/*"
